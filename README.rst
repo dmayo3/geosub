@@ -24,7 +24,7 @@
 
 
 geosub v0.1.0a0
---------------
+---------------
 
 Docs: https://geosub.readthedocs.io/
 
