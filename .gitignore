@@ -1,0 +1,10 @@
+dist
+build
+.tox
+__pycache__
+*.egg-info
+docs/generated
+geosub/data/geonames_all_countries_sorted.tsv
+.coverage
+*.lcov
+htmlcov
