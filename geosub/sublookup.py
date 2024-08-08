@@ -60,7 +60,7 @@ def lookup(
         if result:
             return result
 
-        results: list[type[pycountry.Subdivisions]] | None
+        results: Optional[list[type[pycountry.Subdivisions]]]
         try:
             results = pycountry.subdivisions.search_fuzzy(subdivision_name)
         except LookupError:
