@@ -149,6 +149,9 @@ def test_lookup_all_countries():
             unsupported_countries.append(country.alpha_2)
 
     assert supported_countries == geosub.SUPPORTED_COUNTRY_CODES
+    assert [
+        pycountry.countries.get(alpha_2=code).name for code in supported_countries
+    ] == geosub.SUPPORTED_LOCATIONS
     assert unsupported_countries == geosub.UNSUPPORTED_COUNTRY_CODES
     assert [
         pycountry.countries.get(alpha_2=code).name for code in unsupported_countries

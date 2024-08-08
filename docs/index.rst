@@ -51,7 +51,7 @@ Some countries are not supported, and there are no guarantees that every postal 
 Here are some details about supported and unsupported locations:
 
 .. automodule:: geosub
-   :members: UNSUPPORTED_LOCATIONS, UNSUPPORTED_COUNTRY_CODES, SUPPORTED_COUNTRY_CODES
+   :members: UNSUPPORTED_LOCATIONS, UNSUPPORTED_COUNTRY_CODES, SUPPORTED_COUNTRY_CODES, SUPPORTED_LOCATIONS
 
 
 Indices and tables
