@@ -68,7 +68,74 @@ SUPPORTED_COUNTRY_CODES = [
 """
 ISO 3166-1 alpha-2 codes that should be supported.
 
-There may still be some gaps in the data within some of the smaller territories.
+There may still be some gaps in the data, especially within some of the smaller territories.
+"""
+
+SUPPORTED_LOCATIONS = [
+    "Andorra",
+    "Argentina",
+    "Australia",
+    "Austria",
+    "Azerbaijan",
+    "Belgium",
+    "Brazil",
+    "Canada",
+    "Switzerland",
+    "China",
+    "Colombia",
+    "Cyprus",
+    "Czechia",
+    "Germany",
+    "Algeria",
+    "Ecuador",
+    "Spain",
+    "Finland",
+    "France",
+    "United Kingdom",
+    "Guadeloupe",
+    "Guatemala",
+    "French Guiana",
+    "Croatia",
+    "Hungary",
+    "India",
+    "Ireland",
+    "Italy",
+    "Japan",
+    "Liechtenstein",
+    "Sri Lanka",
+    "Luxembourg",
+    "Morocco",
+    "Monaco",
+    "Mexico",
+    "Malta",
+    "Martinique",
+    "Malawi",
+    "Malaysia",
+    "Mayotte",
+    "Netherlands",
+    "Norway",
+    "New Zealand",
+    "Pakistan",
+    "Peru",
+    "Philippines",
+    "Portugal",
+    "Réunion",
+    "Romania",
+    "Svalbard and Jan Mayen",
+    "Saint Pierre and Miquelon",
+    "Slovakia",
+    "Sweden",
+    "Thailand",
+    "Türkiye",
+    "Ukraine",
+    "Uruguay",
+    "United States",
+    "Wallis and Futuna",
+]
+"""
+Countries, territories or areas of interest that should be supported.
+
+There may still be some gaps in the data, especially within some of the smaller territories.
 """
 
 UNSUPPORTED_COUNTRY_CODES = [
