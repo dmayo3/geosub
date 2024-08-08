@@ -1,4 +1,4 @@
-geosub v0.0.1a0
+geosub v0.1.0a0
 ===============
 
 `GitHub repository <https://github.com/dmayo3/geosub>`_

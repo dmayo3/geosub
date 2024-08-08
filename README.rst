@@ -23,7 +23,7 @@
    :alt: License
 
 
-geosub v0.0.1a0
+geosub v0.1.0a0
 --------------
 
 Docs: https://geosub.readthedocs.io/
