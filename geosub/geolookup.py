@@ -58,26 +58,34 @@ class SubdivisionCodeLookup:
     ) -> Optional[Subdivision]:
         """
         Attempts to find an ISO 3166-2 subdivision code for a given country code and postal code.
-        """
-        # Normalize search parameters
-        country = country.strip().upper()
-        prefix = postal_code.replace(" ", "")[:4].upper()
 
-        if country in {"CA", "IE", "MT"}:
-            # We only have the first 3 chars for Canada, Ireland, and Malta
-            prefix = prefix[:3]
+        Parameters:
+            country (CountryCode): The ISO 3166-1 alpha-2 country code.
+            postal_code (PostalCode): The postal code or postal code prefix.
+            allow_empty_prefix (bool): Whether to allow an empty postal code prefix.
+
+        Returns:
+            Optional[Subdivision]: A tuple containing the subdivision code and name,
+                                   or None if not found.
+
+        Examples:
+            >>> from geosub.geolookup import SubdivisionCodeLookup
+            >>> lookup = SubdivisionCodeLookup("geosub/data/geonames_all_countries_sorted.tsv")
+
+            >>> lookup.find_subdivision("US", "90210")
+            ('CA', 'California')
+        """
+        country, prefix = _normalize_input(country, postal_code)
 
         if not country or (not prefix and not allow_empty_prefix):
             return None
 
-        target_key = (country, prefix)
-
-        if not (record := self._search_record(target_key)):
+        if not (record := self._search_record(target_key=(country, prefix))):
             return None
 
         subdivision_code = record[4]
-        subdivision_name = transliterate(record[3])
-        subdivision_name = clean_region_name(subdivision_name)
+        subdivision_name = _transliterate(record[3])
+        subdivision_name = _clean_region_name(subdivision_name)
 
         if subdivision_code and subdivision_name:
             return subdivision_code, subdivision_name
@@ -125,7 +133,31 @@ class SubdivisionCodeLookup:
         return None
 
 
-def clean_region_name(region_name: str) -> str:
+def _normalize_input(
+    country: CountryCode,
+    postal_code: PostalCode,
+) -> tuple[CountryCode, PostalCode]:
+    """
+    Normalize the country code and postal code by stripping whitespace,
+    uppercasing, and handling special cases for certain countries.
+
+    Examples:
+        >>> from geosub.geolookup import _normalize_input
+        >>> _normalize_input("  us  ", "  90210  ")
+        ('US', '9021')
+        >>> _normalize_input("  Ca  ", "  K1A 0A0  ")
+        ('CA', 'K1A')
+    """
+    country = country.strip().upper()
+    prefix = postal_code.replace(" ", "")[:4].upper()
+
+    if country in {"CA", "IE", "MT"}:
+        prefix = prefix[:3]  # Special handling for Canada, Ireland, and Malta
+
+    return country, prefix
+
+
+def _clean_region_name(region_name: str) -> str:
     """
     Clean up a region name by removing any suffix enclosed in parentheses.
 
@@ -155,7 +187,7 @@ def clean_region_name(region_name: str) -> str:
     return cleaned_name.strip()
 
 
-def transliterate(text: str) -> str:
+def _transliterate(text: str) -> str:
     """
     Transliterate Cyrillic characters to Latin characters.
 

@@ -12,7 +12,7 @@ def lookup(
     """
     Retrieves the ISO 3166-2 subdivision information for a given country code and postal code.
 
-    This function searches an offline dataset to find the time zone associated with
+    This function searches an offline dataset to find the subdivision associated with
     the specified postal code within a given country. It uses this to retrieve the subdivision
     information from the `pycountry` library, based on the input parameters. If
     no matching information is found, the function returns `None`.
@@ -43,41 +43,58 @@ def lookup(
     data_resource = files("geosub.data").joinpath("geonames_all_countries_sorted.tsv")
     with as_file(data_resource) as data_file_path:
         sublookup = SubdivisionCodeLookup(str(data_file_path))
-        if (
-            subdivision := sublookup.find_subdivision(
-                country_code,
-                postal_code,
-                allow_empty_prefix,
-            )
-        ) is None:
+        subdivision = sublookup.find_subdivision(
+            country_code,
+            postal_code,
+            allow_empty_prefix,
+        )
+
+        if not subdivision:
             return None
 
         subdivision_code, subdivision_name = subdivision
+        iso_code = f"{country_code}-{subdivision_code}"
 
-        result: pycountry.SubdivisionHierarchy = pycountry.subdivisions.get(
-            code=f"{country_code}-{subdivision_code}",
-        )
-        if result:
-            return result
+        if not (result := pycountry.subdivisions.get(code=iso_code)):
+            result = _fuzzy_search_subdivision(country_code, subdivision_name)
 
-        results: Optional[list[type[pycountry.Subdivisions]]]
-        try:
-            results = pycountry.subdivisions.search_fuzzy(subdivision_name)
-        except LookupError:
-            results = None
+        return result
 
-        if results is None:
-            return None
 
-        if len(results) > 1:
-            results = [
-                r
-                for r in results
-                if not isinstance(r, pycountry.SubdivisionHierarchy)
-                or r.country_code == country_code
-            ]
+def _fuzzy_search_subdivision(
+    country_code: CountryCode,
+    subdivision_name: str,
+) -> Optional[pycountry.SubdivisionHierarchy]:
+    """
+    Handle fuzzy search and filtering logic for subdivisions when looking up
+    based on the subdivision code doesn't yield a result.
 
-        if len(results) == 1 and isinstance(results[0], pycountry.SubdivisionHierarchy):
-            return results[0]
+    We only want one definitive result, or none at all.
 
+    Examples:
+        >>> from geosub.sublookup import _fuzzy_search_subdivision
+        >>> _fuzzy_search_subdivision('CA', 'Ontario')
+        SubdivisionHierarchy(code='CA-ON', country_code='CA', name='Ontario',..., type='Province')
+    """
+    results: Optional[list[type[pycountry.Subdivisions]]]
+    try:
+        results = pycountry.subdivisions.search_fuzzy(subdivision_name)
+    except LookupError:
         return None
+
+    if results is None:
+        return None
+
+    # Filter results by country code
+    if len(results) > 1:
+        results = [
+            r
+            for r in results
+            if isinstance(r, pycountry.SubdivisionHierarchy)
+            and r.country_code == country_code
+        ]
+
+    if len(results) == 1 and isinstance(results[0], pycountry.SubdivisionHierarchy):
+        return results[0]
+
+    return None
