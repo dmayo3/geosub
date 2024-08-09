@@ -1,6 +1,6 @@
 [project]
 name = "geosub"
-version = "0.1.1a0"
+version = "0.1.2a0"
 
 description = "Lookup ISO 3166-2 geographic subdivisions from postal and country codes, using GeoNames and pycountry."
 
@@ -55,7 +55,7 @@ include-package-data = true
 exclude = ["docs*", "tests*", "*.gz"]
 
 [tool.bumpver]
-current_version = "0.1.1a0"
+current_version = "0.1.2a0"
 version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
